@@ -14,6 +14,14 @@ import { TesteComponent } from './teste/teste.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TestNgContentComponent } from './components/test-ng-content/test-ng-content.component';
 import { Teste1Component } from './teste1/teste1.component';
+import {
+    ModalBodyComponent,
+    ModalContentDirective,
+    ModalDynamicComponent,
+    ModalTitleComponent,
+    TestModal
+} from './modal-dynamic/modal-dynamic.component';
+import { ModalTitleDirective } from './modal-dynamic/modal-title.directive';
 
 @NgModule({
     declarations: [
@@ -29,13 +37,20 @@ import { Teste1Component } from './teste1/teste1.component';
         ModalComponent,
         TestNgContentComponent,
         Teste1Component,
+        ModalDynamicComponent,
+        ModalTitleDirective,
+        ModalContentDirective,
+        ModalTitleComponent,
+        ModalBodyComponent,
+        TestModal
     ],
     imports: [
         BrowserModule,
         FormsModule
     ],
     providers: [],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    entryComponents: [TestModal]
 })
 export class AppModule {
 }
