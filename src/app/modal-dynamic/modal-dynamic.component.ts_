@@ -1,0 +1,156 @@
+import {Component, ComponentFactoryResolver, Directive, ElementRef, OnInit, ViewChild, ViewContainerRef, Injectable, ApplicationRef, Injector, EmbeddedViewRef} from '@angular/core';
+import {Type} from '@angular/core';
+import {ModalTitleDirective} from './modal-title.directive';
+
+declare var $;
+@Directive({
+    selector: '[modalContent]'
+})
+export class ModalContentDirective {
+
+    constructor(public viewContainerRef: ViewContainerRef) { }
+
+}
+
+@Component({
+    selector: 'app-modal-dynamic',
+    template: `
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <ng-template modalContent></ng-template>
+                </div>
+            </div>
+        </div>
+    `,
+    styleUrls: ['./modal-dynamic.component.scss']
+})
+export class ModalDynamicComponent implements OnInit {
+    //component: Type<any>;
+    @ViewChild(ModalContentDirective) modalContent: ModalContentDirective;
+    constructor(private componentFactoryResolver: ComponentFactoryResolver,
+    private element: ElementRef) {
+    }
+
+    ngOnInit() {
+        /*let componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestModal);
+
+        let viewContainerRef = this.modalContent.viewContainerRef;
+        let componentRef = viewContainerRef.createComponent(componentFactory);
+
+        console.log(componentRef);*/
+    }
+
+    montar(component){
+    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
+
+        let viewContainerRef = this.modalContent.viewContainerRef;
+        let componentRef = viewContainerRef.createComponent(componentFactory);
+
+        console.log(componentRef);
+    }
+
+    show() {
+        $(this.divModal).modal('show');
+    }
+
+    private get divModal(): HTMLElement {
+        const nativeElement: HTMLElement = this.element.nativeElement; //modal
+        return nativeElement.firstChild as HTMLElement;
+    }
+}
+
+@Component({
+    selector: 'modal-title',
+    template: `
+        <div class="modal-header">
+            <ng-content></ng-content>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    `
+})
+export class ModalTitleComponent implements OnInit{
+
+    constructor(private element: ElementRef) {
+
+    }
+
+    ngOnInit(): void {
+        const nativeElement: HTMLElement = this.element.nativeElement;
+        (<any>nativeElement.firstChild).classList.add('modal-title');
+    }
+
+}
+
+@Component({
+    selector: 'modal-body',
+    template: `
+       <ng-content></ng-content>
+    `
+})
+export class ModalBodyComponent implements OnInit{
+
+    constructor(private element: ElementRef) {
+
+    }
+
+    ngOnInit(): void {
+        const nativeElement: HTMLElement = this.element.nativeElement;
+        (<any>nativeElement.firstChild).classList.add('modal-body');
+    }
+
+}
+
+
+
+@Component({
+    selector: 'test-modal',
+    template: `
+        <modal-title>
+            <h5>Novo empregado</h5>
+        </modal-title>
+        <modal-body>
+            <div>
+                conteudo do body
+            </div>
+        </modal-body>
+    `
+})
+export class TestModal {
+
+}
+
+@Injectable({providedIn: 'root'})
+export class ModalService{
+    constructor(
+        private componentFactoryResolver: ComponentFactoryResolver,
+        private appRef: ApplicationRef,
+        private injector: Injector
+    ) { }
+
+    open(component: any) {
+        // 1. Create a component reference from the component 
+        const componentRef = this.componentFactoryResolver
+          .resolveComponentFactory(ModalDynamicComponent)
+          .create(this.injector);
+        console.log(componentRef);
+        // 2. Attach component to the appRef so that it's inside the ng component tree
+        this.appRef.attachView(componentRef.hostView);
+        
+        // 3. Get DOM element from component
+        const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
+          .rootNodes[0] as HTMLElement;
+        
+        // 4. Append DOM element to the body
+        document.body.appendChild(domElem);
+        componentRef.instance.montar(TestModal);
+        componentRef.instance.show();
+        // 5. Wait some time and remove it from the component tree and from the DOM
+        // setTimeout(() => {
+        //     this.appRef.detachView(componentRef.hostView);
+        //     componentRef.destroy();
+        // }, 3000);
+      }
+}

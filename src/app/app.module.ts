@@ -14,14 +14,10 @@ import { TesteComponent } from './teste/teste.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TestNgContentComponent } from './components/test-ng-content/test-ng-content.component';
 import { Teste1Component } from './teste1/teste1.component';
-import {
-    ModalBodyComponent,
-    ModalContentDirective,
-    ModalDynamicComponent,
-    ModalTitleComponent,
-    TestModal
-} from './modal-dynamic/modal-dynamic.component';
-import { ModalTitleDirective } from './modal-dynamic/modal-title.directive';
+import { ModalDynamicComponent, ModalContentDirective } from './modal/modal-dynamic/modal-dynamic.component';
+import { ModalTitleComponent } from './modal/modal-title/modal-title.component';
+import { ModalBodyComponent } from './modal/modal-body/modal-body.component';
+import { TestModalComponent } from './test-modal/test-modal.component';
 
 @NgModule({
     declarations: [
@@ -38,11 +34,11 @@ import { ModalTitleDirective } from './modal-dynamic/modal-title.directive';
         TestNgContentComponent,
         Teste1Component,
         ModalDynamicComponent,
-        ModalTitleDirective,
+        ModalTitleComponent,
         ModalContentDirective,
         ModalTitleComponent,
         ModalBodyComponent,
-        TestModal
+        TestModalComponent,
     ],
     imports: [
         BrowserModule,
@@ -50,7 +46,7 @@ import { ModalTitleDirective } from './modal-dynamic/modal-title.directive';
     ],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [TestModal]
+    entryComponents: [ModalDynamicComponent, TestModalComponent]
 })
 export class AppModule {
 }
